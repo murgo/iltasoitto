@@ -29,8 +29,8 @@ public class AlarmSetter extends BroadcastReceiver {
 
     @SuppressLint("NewApi")
     public static void setAlarm(Context ctx) {
-        int hour = PreferenceManager.getDefaultSharedPreferences(ctx).getInt(MainActivity.KEY_PREF_HOUR, 20);
-        int minute = PreferenceManager.getDefaultSharedPreferences(ctx).getInt(MainActivity.KEY_PREF_MINUTE, 0);
+        int hour = PreferenceManager.getDefaultSharedPreferences(ctx).getInt(MainActivity.KEY_PREF_HOUR, 12);
+        int minute = PreferenceManager.getDefaultSharedPreferences(ctx).getInt(MainActivity.KEY_PREF_MINUTE, 30);
 
         AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
 

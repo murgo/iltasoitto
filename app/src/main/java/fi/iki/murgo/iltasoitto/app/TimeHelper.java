@@ -1,6 +1,7 @@
 package fi.iki.murgo.iltasoitto.app;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 
 public class TimeHelper {
     public static long getNextTime(int hourOfDay, int minuteOfHour)
@@ -15,6 +16,11 @@ public class TimeHelper {
                 .withSecondOfMinute(0)
                 .withMillisOfSecond(0);
 
-        return (then.isBefore(now) ? then.plusDays(1) : then).toInstant().getMillis();
+        then = (then.isBefore(now) ? then.plusDays(1) : then);
+        while (then.getDayOfWeek() >= DateTimeConstants.SATURDAY) {
+            then = then.plusDays(1);
+        }
+
+        return then.toInstant().getMillis();
     }
 }

@@ -17,11 +17,11 @@ public class MusicPlayerService extends IntentService {
     protected void onHandleIntent(final Intent intent) {
         Context context = getApplicationContext();
 
-        mediaPlayer = MediaPlayer.create(context, R.raw.iltasoitto);
+        mediaPlayer = MediaPlayer.create(context, R.raw.sonni);
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                Log.i("iltasoitto", "Iltasoitto played succesfully.");
+                Log.i("iltasonni", "Iltasonni played succesfully.");
                 mediaPlayer.release();
                 mediaPlayer = null;
 
