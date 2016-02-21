@@ -6,29 +6,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
-
-import java.util.Calendar;
 
 public class AlarmSetter extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
         checkAlarm(context);
-    }
-
-    private static long getMillisecondsUntilEight() {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, 20);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
-
-        if (c.getTimeInMillis() - 60000 < System.currentTimeMillis()) {
-            c.add(Calendar.DATE, 1);
-        }
-
-        return c.getTimeInMillis();
     }
 
     private static PendingIntent createIntent(Context ctx) {
@@ -44,8 +27,11 @@ public class AlarmSetter extends BroadcastReceiver {
     }
 
     public static void setAlarm(Context ctx) {
+        int hour = PreferenceManager.getDefaultSharedPreferences(ctx).getInt(MainActivity.KEY_PREF_HOUR, 20);
+        int minute = PreferenceManager.getDefaultSharedPreferences(ctx).getInt(MainActivity.KEY_PREF_MINUTE, 0);
+
         AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, getMillisecondsUntilEight(), AlarmManager.INTERVAL_DAY, createIntent(ctx));
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, TimeHelper.getNextTime(hour, minute) , AlarmManager.INTERVAL_DAY, createIntent(ctx));
     }
 
     public static void checkAlarm(Context ctx) {

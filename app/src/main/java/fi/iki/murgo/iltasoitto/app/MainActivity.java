@@ -6,6 +6,8 @@ import android.preference.PreferenceActivity;
 
 public class MainActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String KEY_PREF_ACTIVE = "pref_active";
+    public static final String KEY_PREF_HOUR = "pref_hour";
+    public static final String KEY_PREF_MINUTE = "pref_minute";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
