@@ -1,5 +1,6 @@
 package fi.iki.murgo.iltasoitto.app;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -15,7 +16,7 @@ public class AlarmSetter extends BroadcastReceiver {
     }
 
     private static PendingIntent createIntent(Context ctx) {
-        Intent intent = new Intent(ctx, HarjuPlayer.class);
+        Intent intent = new Intent(ctx, HarjuLauncher.class);
         return PendingIntent.getBroadcast(ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
@@ -26,12 +27,18 @@ public class AlarmSetter extends BroadcastReceiver {
         intent.cancel();
     }
 
+    @SuppressLint("NewApi")
     public static void setAlarm(Context ctx) {
         int hour = PreferenceManager.getDefaultSharedPreferences(ctx).getInt(MainActivity.KEY_PREF_HOUR, 20);
         int minute = PreferenceManager.getDefaultSharedPreferences(ctx).getInt(MainActivity.KEY_PREF_MINUTE, 0);
 
         AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, TimeHelper.getNextTime(hour, minute) , createIntent(ctx));
+
+        if (android.os.Build.VERSION.SDK_INT >= 19) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, TimeHelper.getNextTime(hour, minute), createIntent(ctx));
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, TimeHelper.getNextTime(hour, minute), createIntent(ctx));
+        }
     }
 
     public static void checkAlarm(Context ctx) {

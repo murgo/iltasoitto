@@ -3,6 +3,7 @@
     package="fi.iki.murgo.iltasoitto.app" >
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:allowBackup="true"
@@ -19,7 +20,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".HarjuPlayer" />
+        <receiver android:name=".HarjuLauncher" />
 
         <receiver android:name=".AlarmSetter">
             <intent-filter>
@@ -27,6 +28,8 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
+
+        <service android:name=".MusicPlayerService" android:exported="false" />
 
     </application>
 
