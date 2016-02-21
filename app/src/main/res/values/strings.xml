@@ -6,4 +6,6 @@
 
     <string name="toast_active">active</string>
     <string name="toast_inactive">inactive</string>
+
+    <string name="pref_credits">App by Lauri Härsilä, murgo@iki.fi</string>
 </resources>
