@@ -31,7 +31,7 @@ public class AlarmSetter extends BroadcastReceiver {
         int minute = PreferenceManager.getDefaultSharedPreferences(ctx).getInt(MainActivity.KEY_PREF_MINUTE, 0);
 
         AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, TimeHelper.getNextTime(hour, minute) , AlarmManager.INTERVAL_DAY, createIntent(ctx));
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, TimeHelper.getNextTime(hour, minute) , createIntent(ctx));
     }
 
     public static void checkAlarm(Context ctx) {
