@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Harjun iltasoitto</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="pref_title_active">Active</string>
+
+    <string name="toast_active">active</string>
+    <string name="toast_inactive">inactive</string>
+</resources>
