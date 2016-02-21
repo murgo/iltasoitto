@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">Harjun iltasoitto</string>
-
     <string name="action_settings">Asetukset</string>
     <string name="pref_title_active">Aktiivinen</string>
 
