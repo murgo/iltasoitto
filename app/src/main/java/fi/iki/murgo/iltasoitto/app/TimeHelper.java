@@ -2,10 +2,15 @@ package fi.iki.murgo.iltasoitto.app;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
+import org.joda.time.DateTimeZone;
+
+import java.util.TimeZone;
 
 public class TimeHelper {
     public static long getNextTime(int hourOfDay, int minuteOfHour)
     {
+        DateTimeZone.forTimeZone(TimeZone.getDefault());
+
         return getNextTime(new DateTime(), hourOfDay, minuteOfHour);
     }
 
@@ -17,10 +22,14 @@ public class TimeHelper {
                 .withMillisOfSecond(0);
 
         then = (then.isBefore(now) ? then.plusDays(1) : then);
-        while (then.getDayOfWeek() >= DateTimeConstants.SATURDAY) {
+        while (then.getDayOfWeek() == DateTimeConstants.SATURDAY || then.getDayOfWeek() == DateTimeConstants.SUNDAY) {
             then = then.plusDays(1);
         }
 
-        return then.toInstant().getMillis();
+        return then.toDateTime().toInstant().getMillis();
+    }
+
+    public static int secondsBetween(long now, long nextTime) {
+        return (int) ((nextTime - now) / 1000L);
     }
 }

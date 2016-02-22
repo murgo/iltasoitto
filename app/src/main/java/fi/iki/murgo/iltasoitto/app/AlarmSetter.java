@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
+import net.danlew.android.joda.JodaTimeAndroid;
 
 public class AlarmSetter extends BroadcastReceiver {
 
@@ -29,11 +30,12 @@ public class AlarmSetter extends BroadcastReceiver {
 
     @SuppressLint("NewApi")
     public static void setAlarm(Context ctx) {
-        int hour = PreferenceManager.getDefaultSharedPreferences(ctx).getInt(MainActivity.KEY_PREF_HOUR, 12);
-        int minute = PreferenceManager.getDefaultSharedPreferences(ctx).getInt(MainActivity.KEY_PREF_MINUTE, 30);
+        int hour = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(ctx).getString(MainActivity.KEY_PREF_HOUR, "12"));
+        int minute = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(ctx).getString(MainActivity.KEY_PREF_MINUTE, "30"));
 
         AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
 
+        JodaTimeAndroid.init(ctx);
         if (android.os.Build.VERSION.SDK_INT >= 19) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, TimeHelper.getNextTime(hour, minute), createIntent(ctx));
         } else {
@@ -43,12 +45,6 @@ public class AlarmSetter extends BroadcastReceiver {
 
     public static void checkAlarm(Context ctx) {
         boolean active = PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(MainActivity.KEY_PREF_ACTIVE, true);
-
-        /*
-        String activeText = ctx.getString((active ? R.string.toast_active : R.string.toast_inactive));
-        Toast toast = Toast.makeText(ctx, ctx.getText(R.string.app_name) + " " + activeText + ".", Toast.LENGTH_SHORT);
-        toast.show();
-        */
 
         if (active) {
             setAlarm(ctx);
