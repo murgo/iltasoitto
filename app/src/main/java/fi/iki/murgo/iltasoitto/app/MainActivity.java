@@ -20,6 +20,11 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
 
         addPreferencesFromResource(R.xml.preferences);
         AlarmSetter.checkAlarm(this);
+
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.remove(KEY_PREF_HOUR);
+        editor.remove(KEY_PREF_MINUTE);
+        editor.commit();
     }
 
     @Override
@@ -39,13 +44,7 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
         if (key.equals(KEY_PREF_ACTIVE)) {
             AlarmSetter.checkAlarm(this);
 
-            showToast();
-        }
-
-        // DEBUG
-        if (key.equals("pref_run")) {
-            Intent intent = new Intent(this, HarjuLauncher.class);
-            sendBroadcast(intent);
+            //showToast();
         }
     }
 
