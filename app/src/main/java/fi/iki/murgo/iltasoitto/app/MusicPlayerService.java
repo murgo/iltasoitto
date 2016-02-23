@@ -21,12 +21,12 @@ public class MusicPlayerService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.sonni);
+        mediaPlayer = MediaPlayer.create(this, R.raw.iltasoitto);
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                Log.i("iltasonni", "Iltasonni played succesfully.");
+                Log.i("iltasoitto", "Iltasoitto played succesfully.");
 
                 stopSelf();
             }
