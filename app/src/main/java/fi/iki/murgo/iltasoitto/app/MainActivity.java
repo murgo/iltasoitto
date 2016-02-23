@@ -1,8 +1,12 @@
 package fi.iki.murgo.iltasoitto.app;
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 public class MainActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String KEY_PREF_ACTIVE = "pref_active";
@@ -33,6 +37,30 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(KEY_PREF_ACTIVE)) {
             AlarmSetter.checkAlarm(this);
+
+            showToast();
         }
+
+        // DEBUG
+        if (key.equals("pref_run")) {
+            Intent intent = new Intent(this, HarjuLauncher.class);
+            sendBroadcast(intent);
+        }
+    }
+
+    private void showToast() {
+        // DEBUG
+        boolean active = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(MainActivity.KEY_PREF_ACTIVE, true);
+        String activeText = getString((active ? R.string.toast_active : R.string.toast_inactive));
+        Toast toast;
+        if (active) {
+            int hour = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString(MainActivity.KEY_PREF_HOUR, "12"));
+            int minute = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString(MainActivity.KEY_PREF_MINUTE, "30"));
+            int seconds = TimeHelper.secondsBetween(System.currentTimeMillis(), (TimeHelper.getNextTime(hour, minute)));
+            toast = Toast.makeText(this, getText(R.string.app_name) + " " + getText(R.string.toast_active) + ". Seconds until next play: " + seconds, Toast.LENGTH_SHORT);
+        } else {
+            toast = Toast.makeText(this, getText(R.string.app_name) + " " + activeText + ".", Toast.LENGTH_SHORT);
+        }
+        toast.show();
     }
 }

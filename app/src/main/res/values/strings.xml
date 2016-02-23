@@ -8,4 +8,7 @@
     <string name="toast_inactive">inactive</string>
 
     <string name="pref_credits">App by Lauri Härsilä, murgo@iki.fi</string>
+
+    <string name="notification_title">Iltasoitto</string>
+    <string name="notification_text">Click here to stop playing</string>
 </resources>
