@@ -6,7 +6,9 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class AlarmSetter extends BroadcastReceiver {
 
@@ -20,7 +22,7 @@ public class AlarmSetter extends BroadcastReceiver {
         return PendingIntent.getBroadcast(ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    public static void clearAlarm(Context ctx) {
+    private static void clearAlarm(Context ctx) {
         PendingIntent intent = createIntent(ctx);
         AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(intent);
@@ -28,9 +30,9 @@ public class AlarmSetter extends BroadcastReceiver {
     }
 
     @SuppressLint("NewApi")
-    public static void setAlarm(Context ctx) {
-        int hour = PreferenceManager.getDefaultSharedPreferences(ctx).getInt(MainActivity.KEY_PREF_HOUR, 20);
-        int minute = PreferenceManager.getDefaultSharedPreferences(ctx).getInt(MainActivity.KEY_PREF_MINUTE, 0);
+    private static void setAlarm(Context ctx) {
+        int hour = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(ctx).getString(MainActivity.KEY_PREF_HOUR, "20"));
+        int minute = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(ctx).getString(MainActivity.KEY_PREF_MINUTE, "0"));
 
         AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
 
@@ -42,7 +44,8 @@ public class AlarmSetter extends BroadcastReceiver {
     }
 
     public static void checkAlarm(Context ctx) {
-        boolean active = PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(MainActivity.KEY_PREF_ACTIVE, true);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        boolean active = prefs.getBoolean(MainActivity.KEY_PREF_ACTIVE, true);
 
         /*
         String activeText = ctx.getString((active ? R.string.toast_active : R.string.toast_inactive));
@@ -52,8 +55,14 @@ public class AlarmSetter extends BroadcastReceiver {
 
         if (active) {
             setAlarm(ctx);
+
+            int hour = Integer.parseInt(prefs.getString(MainActivity.KEY_PREF_HOUR, "12"));
+            int minute = Integer.parseInt(prefs.getString(MainActivity.KEY_PREF_MINUTE, "30"));
+            int seconds = TimeHelper.secondsBetween(System.currentTimeMillis(), (TimeHelper.getNextTime(hour, minute)));
+            Log.i(MainActivity.LOG_TAG, "Iltasoitto scheduled to play in " + seconds + " seconds.");
         } else {
             clearAlarm(ctx);
+            Log.i(MainActivity.LOG_TAG, "Iltasoitto cleared");
         }
     }
 }
