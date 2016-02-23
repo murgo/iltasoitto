@@ -24,7 +24,7 @@ public class MainActivity extends PreferenceActivity implements SharedPreference
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
         editor.remove(KEY_PREF_HOUR);
         editor.remove(KEY_PREF_MINUTE);
-        editor.commit();
+        editor.apply();
     }
 
     @Override
