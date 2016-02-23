@@ -6,4 +6,7 @@
     <string name="toast_inactive">pois päältä</string>
 
     <string name="pref_credits">Sovelluksen kehitti Lauri Härsilä, murgo@iki.fi</string>
+
+    <string name="notification_title">Iltasoitto</string>
+    <string name="notification_text">Paina tästä soiton lopettamiseksi</string>
 </resources>
