@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import net.danlew.android.joda.JodaTimeAndroid;
 
 public class AlarmSetter extends BroadcastReceiver {
 
@@ -36,6 +37,8 @@ public class AlarmSetter extends BroadcastReceiver {
 
         AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
 
+        JodaTimeAndroid.init(ctx);
+
         if (android.os.Build.VERSION.SDK_INT >= 19) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, TimeHelper.getNextTime(hour, minute), createIntent(ctx));
         } else {
@@ -46,12 +49,6 @@ public class AlarmSetter extends BroadcastReceiver {
     public static void checkAlarm(Context ctx) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         boolean active = prefs.getBoolean(MainActivity.KEY_PREF_ACTIVE, true);
-
-        /*
-        String activeText = ctx.getString((active ? R.string.toast_active : R.string.toast_inactive));
-        Toast toast = Toast.makeText(ctx, ctx.getText(R.string.app_name) + " " + activeText + ".", Toast.LENGTH_SHORT);
-        toast.show();
-        */
 
         if (active) {
             setAlarm(ctx);

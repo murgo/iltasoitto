@@ -17,4 +17,8 @@ public class TimeHelper {
 
         return (then.isBefore(now) ? then.plusDays(1) : then).toInstant().getMillis();
     }
+
+    public static int secondsBetween(long now, long nextTime) {
+        return (int) ((nextTime - now) / 1000L);
+    }
 }
