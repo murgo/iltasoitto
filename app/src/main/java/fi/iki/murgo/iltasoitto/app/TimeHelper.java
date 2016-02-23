@@ -2,15 +2,10 @@ package fi.iki.murgo.iltasoitto.app;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
-import org.joda.time.DateTimeZone;
-
-import java.util.TimeZone;
 
 public class TimeHelper {
     public static long getNextTime(int hourOfDay, int minuteOfHour)
     {
-        DateTimeZone.forTimeZone(TimeZone.getDefault());
-
         return getNextTime(new DateTime(), hourOfDay, minuteOfHour);
     }
 
