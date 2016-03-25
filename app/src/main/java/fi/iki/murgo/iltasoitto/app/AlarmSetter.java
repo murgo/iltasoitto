@@ -6,8 +6,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -31,35 +29,30 @@ public class AlarmSetter extends BroadcastReceiver {
     }
 
     @SuppressLint("NewApi")
-    private static void setAlarm(Context ctx) {
-        int hour = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(ctx).getString(MainActivity.KEY_PREF_HOUR, "20"));
-        int minute = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(ctx).getString(MainActivity.KEY_PREF_MINUTE, "0"));
-
+    public static void setAlarm(Context ctx, int hour, int minute, int second) {
         AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
 
         JodaTimeAndroid.init(ctx);
 
         if (android.os.Build.VERSION.SDK_INT >= 19) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, TimeHelper.getNextTime(hour, minute), createIntent(ctx));
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, TimeHelper.getNextTime(hour, minute, second), createIntent(ctx));
         } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, TimeHelper.getNextTime(hour, minute), createIntent(ctx));
+            alarmManager.set(AlarmManager.RTC_WAKEUP, TimeHelper.getNextTime(hour, minute, second), createIntent(ctx));
         }
     }
 
     public static void checkAlarm(Context ctx) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-        boolean active = prefs.getBoolean(MainActivity.KEY_PREF_ACTIVE, true);
+        if (PreferenceHelper.get(ctx).isActive()) {
 
-        if (active) {
-            setAlarm(ctx);
+            int hour = PreferenceHelper.get(ctx).getHour();
+            int minute = PreferenceHelper.get(ctx).getMinute();
+            setAlarm(ctx, hour, minute, 0);
 
-            int hour = Integer.parseInt(prefs.getString(MainActivity.KEY_PREF_HOUR, "12"));
-            int minute = Integer.parseInt(prefs.getString(MainActivity.KEY_PREF_MINUTE, "30"));
-            int seconds = TimeHelper.secondsBetween(System.currentTimeMillis(), (TimeHelper.getNextTime(hour, minute)));
-            Log.i(MainActivity.LOG_TAG, "Iltasoitto scheduled to play in " + seconds + " seconds.");
+            int seconds = TimeHelper.secondsBetween(System.currentTimeMillis(), (TimeHelper.getNextTime(hour, minute, 0)));
+            Log.i(HarjuMainActivity.LOG_TAG, "Iltasoitto scheduled to play in " + seconds + " seconds.");
         } else {
             clearAlarm(ctx);
-            Log.i(MainActivity.LOG_TAG, "Iltasoitto cleared");
+            Log.i(HarjuMainActivity.LOG_TAG, "Iltasoitto cleared");
         }
     }
 }

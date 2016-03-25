@@ -26,7 +26,7 @@ public class MusicPlayerService extends Service {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                Log.i(MainActivity.LOG_TAG, "Iltasoitto played succesfully.");
+                Log.i(HarjuMainActivity.LOG_TAG, "Iltasoitto played succesfully.");
 
                 stopSelf();
             }
@@ -35,7 +35,7 @@ public class MusicPlayerService extends Service {
         backgroundThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.i(MainActivity.LOG_TAG, "Starting player.");
+                Log.i(HarjuMainActivity.LOG_TAG, "Starting player.");
                 mediaPlayer.start();
             }
         });
