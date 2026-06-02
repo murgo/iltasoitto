@@ -7,6 +7,7 @@ public class PreferenceHelper {
     public static final String KEY_PREF_ACTIVE = "pref_active";
     public static final String KEY_PREF_HOUR = "pref_hour";
     public static final String KEY_PREF_MINUTE = "pref_minute";
+    public static final String KEY_PREF_VOLUME = "pref_volume";
 
     private static PreferenceHelper _instance;
     private final SharedPreferences prefs;
@@ -44,5 +45,14 @@ public class PreferenceHelper {
 
     public int getMinute() {
         return Integer.parseInt(prefs.getString(KEY_PREF_MINUTE, "0"));
+    }
+
+    public int getVolume() {
+        return prefs.getInt(KEY_PREF_VOLUME, 100);
+    }
+
+    public void saveVolume(int volume) {
+        editor.putInt(KEY_PREF_VOLUME, volume);
+        editor.apply();
     }
 }

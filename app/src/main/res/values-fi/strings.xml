@@ -3,11 +3,17 @@
     <string name="pref_title_active">Aktiivinen:</string>
 
     <string name="toast_active">päällä</string>
-    <string name="toast_inactive">pois päältä</string>
+    <string name="toast_inactive">Soitto on pois päältä</string>
 
     <string name="pref_credits">Sovelluksen kehitti Lauri Härsilä, murgo@iki.fi</string>
 
     <string name="notification_title">Iltasoitto</string>
     <string name="notification_text">Paina tästä soiton lopettamiseksi</string>
     <string name="nextplay">". Aikaa seuraavaan soittoon: "</string>
+
+    <string name="play_button_play">Soita Harjun iltasoitto</string>
+    <string name="play_button_stop">Pysäytä soitto</string>
+    <string name="volume_label">Äänenvoimakkuus:</string>
+    <string name="notification_warning">Ilmoitukset ovat pois käytöstä. Avaa asetukset napauttamalla ja ota ilmoitukset käyttöön, jotta iltasoitto toimii.</string>
+    <string name="silent_mode_note">Iltasoitto ei soi, jos puhelin on äänettömällä tai värinätilassa.</string>
 </resources>

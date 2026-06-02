@@ -1,20 +1,26 @@
 package fi.iki.murgo.iltasoitto.app;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import java.time.Duration;
-import java.time.LocalDateTime;
 
 public class HarjuMainActivity extends AppCompatActivity {
     public static final String LOG_TAG = "Harjun Iltasoitto";
@@ -50,14 +56,77 @@ public class HarjuMainActivity extends AppCompatActivity {
 
         PreferenceHelper.get(this).clean();
         AlarmSetter.checkAlarm(this);
+
+        SeekBar volumeSlider = findViewById(R.id.volume_slider);
+        volumeSlider.setProgress(PreferenceHelper.get(this).getVolume());
+        volumeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    PreferenceHelper.get(HarjuMainActivity.this).saveVolume(progress);
+                    MusicPlayerService.applyVolume(progress);
+                }
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        findViewById(R.id.play_button).setOnClickListener(v -> togglePlayback());
+        updatePlayButton();
+
+        findViewById(R.id.notification_warning_card).setOnClickListener(v -> openNotificationSettings());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        boolean enabled = NotificationManagerCompat.from(this).areNotificationsEnabled();
+        findViewById(R.id.notification_warning_card).setVisibility(enabled ? View.GONE : View.VISIBLE);
+        updatePlayButton();
+        MusicPlayerService.setPlaybackListener(() -> updatePlayButton());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MusicPlayerService.setPlaybackListener(null);
+    }
+
+    private void openNotificationSettings() {
+        Intent intent = new Intent();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+        } else {
+            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.fromParts("package", getPackageName(), null));
+        }
+        startActivity(intent);
+    }
+
+    private void togglePlayback() {
+        if (MusicPlayerService.isPlaying) {
+            stopService(new Intent(this, MusicPlayerService.class));
+            updatePlayButton(false);
+        } else {
+            ContextCompat.startForegroundService(this, new Intent(this, MusicPlayerService.class));
+            updatePlayButton(true);
+        }
+    }
+
+    private void updatePlayButton() {
+        updatePlayButton(MusicPlayerService.isPlaying);
+    }
+
+    private void updatePlayButton(boolean playing) {
+        ((Button) findViewById(R.id.play_button))
+            .setText(playing ? R.string.play_button_stop : R.string.play_button_play);
     }
 
     private View.OnClickListener getCreditsListener() {
         return v -> {
-            if (PreferenceHelper.get(HarjuMainActivity.this).isActive()) {
-                LocalDateTime date = LocalDateTime.now().plusSeconds(1);
-                AlarmSetter.setAlarm(HarjuMainActivity.this, date.getHour(), date.getMinute(), date.getSecond());
-            }
+            if (!PreferenceHelper.get(HarjuMainActivity.this).isActive()) return;
+            togglePlayback();
         };
     }
 
@@ -89,6 +158,8 @@ public class HarjuMainActivity extends AppCompatActivity {
             Toast.makeText(this,
                 getString(R.string.nextplay) + hours + ":" + String.format("%02d", minutes),
                 Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, getString(R.string.toast_inactive), Toast.LENGTH_SHORT).show();
         }
     }
 }

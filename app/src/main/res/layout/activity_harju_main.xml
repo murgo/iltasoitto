@@ -67,14 +67,85 @@
 
             </LinearLayout>
 
-            <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/logo"
-                    android:layout_gravity="center_horizontal"
-                    android:src="@mipmap/ic_launcher"
-                    android:maxWidth="1000sp"
-                    android:contentDescription="logo"/>
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/volume_label"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="#FFFFFF"
+                        android:layout_marginEnd="8dp"/>
+
+                <SeekBar
+                        android:id="@+id/volume_slider"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:max="100"
+                        android:progress="100"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:id="@+id/notification_warning_card"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_warning_card"
+                    android:padding="12dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/notification_warning"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="#FFFFFF"/>
+
+            </LinearLayout>
+
+            <TextView
+                    android:id="@+id/silent_mode_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/silent_mode_note"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="#99FFFFFF"
+                    android:textStyle="italic"
+                    android:gravity="center"/>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                <ImageView
+                        android:id="@+id/logo"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:src="@mipmap/ic_launcher"
+                        android:contentDescription="logo"/>
+
+                <Button
+                        android:id="@+id/play_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/play_button_play"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

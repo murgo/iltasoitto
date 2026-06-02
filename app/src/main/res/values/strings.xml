@@ -5,11 +5,17 @@
     <string name="pref_title_active">Active:</string>
 
     <string name="toast_active">active</string>
-    <string name="toast_inactive">inactive</string>
+    <string name="toast_inactive">Playing sound is disabled</string>
 
     <string name="pref_credits">App by Lauri Härsilä, murgo@iki.fi</string>
 
     <string name="notification_title">Iltasoitto</string>
     <string name="notification_text">Click here to stop playing</string>
     <string name="nextplay">"Time until next play: "</string>
+
+    <string name="play_button_play">Play Harjun iltasoitto</string>
+    <string name="play_button_stop">Stop playing</string>
+    <string name="volume_label">Volume:</string>
+    <string name="notification_warning">Notifications are disabled. Tap here to open Settings and enable them so the alarm can play.</string>
+    <string name="silent_mode_note">The alarm does not play when the phone is set to silent or vibrate.</string>
 </resources>
