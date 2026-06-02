@@ -10,6 +10,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -40,12 +41,26 @@ public class HarjuMainActivity extends AppCompatActivity {
             return insets;
         });
 
+        View contentArea = findViewById(R.id.content_area);
+        int bottomPadding = contentArea.getPaddingBottom();
+        ViewCompat.setOnApplyWindowInsetsListener(contentArea, (v, insets) -> {
+            int navBarHeight = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
+                bottomPadding + navBarHeight);
+            return insets;
+        });
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                 checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 0);
         }
 
         boolean active = PreferenceHelper.get(this).isActive();
+        int hour = PreferenceHelper.get(this).getHour();
+        int minute = PreferenceHelper.get(this).getMinute();
+        ((TextView) findViewById(R.id.active)).setText(
+            getString(R.string.pref_title_active, String.format("%02d:%02d", hour, minute)));
+
         findViewById(R.id.logo).setVisibility(active ? View.VISIBLE : View.INVISIBLE);
         ((ToggleButton) findViewById(R.id.harjuToggle)).setChecked(active);
 

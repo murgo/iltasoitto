@@ -2,7 +2,7 @@
     <string name="app_name" translatable="false">Harjun iltasoitto</string>
 
     <string name="action_settings">Settings</string>
-    <string name="pref_title_active">Active:</string>
+    <string name="pref_title_active">Play sound at %1$s</string>
 
     <string name="toast_active">active</string>
     <string name="toast_inactive">Playing sound is disabled</string>

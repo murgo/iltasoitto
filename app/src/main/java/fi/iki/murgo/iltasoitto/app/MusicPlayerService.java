@@ -103,6 +103,15 @@ public class MusicPlayerService extends Service {
                 return START_NOT_STICKY;
             }
 
+            int audioMode = audio.getMode();
+            if (audioMode == AudioManager.MODE_IN_CALL || audioMode == AudioManager.MODE_IN_COMMUNICATION) {
+                Log.i(HarjuMainActivity.LOG_TAG, "Phone call in progress, skipping playback.");
+                AlarmSetter.checkAlarm(this);
+                ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
+                stopSelf();
+                return START_NOT_STICKY;
+            }
+
             if (!mediaPlayer.isPlaying()) {
                 Log.i(HarjuMainActivity.LOG_TAG, "Starting player.");
                 mediaPlayer.start();
