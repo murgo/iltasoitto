@@ -1,13 +1,12 @@
 package fi.iki.murgo.iltasoitto.app;
 
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
-import net.danlew.android.joda.JodaTimeAndroid;
 
 public class AlarmSetter extends BroadcastReceiver {
 
@@ -18,7 +17,8 @@ public class AlarmSetter extends BroadcastReceiver {
 
     private static PendingIntent createIntent(Context ctx) {
         Intent intent = new Intent(ctx, HarjuLauncher.class);
-        return PendingIntent.getBroadcast(ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(ctx, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     private static void clearAlarm(Context ctx) {
@@ -28,27 +28,27 @@ public class AlarmSetter extends BroadcastReceiver {
         intent.cancel();
     }
 
-    @SuppressLint("NewApi")
     public static void setAlarm(Context ctx, int hour, int minute, int second) {
         AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+        long triggerAt = TimeHelper.getNextTime(hour, minute, second);
 
-        JodaTimeAndroid.init(ctx);
-
-        if (android.os.Build.VERSION.SDK_INT >= 19) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, TimeHelper.getNextTime(hour, minute, second), createIntent(ctx));
-        } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, TimeHelper.getNextTime(hour, minute, second), createIntent(ctx));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+            // SCHEDULE_EXACT_ALARM not granted by user (API 31-32); USE_EXACT_ALARM covers API 33+
+            Log.w(HarjuMainActivity.LOG_TAG, "Exact alarm permission not granted, using inexact alarm.");
+            alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAt, createIntent(ctx));
+            return;
         }
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAt, createIntent(ctx));
     }
 
     public static void checkAlarm(Context ctx) {
         if (PreferenceHelper.get(ctx).isActive()) {
-
             int hour = PreferenceHelper.get(ctx).getHour();
             int minute = PreferenceHelper.get(ctx).getMinute();
             setAlarm(ctx, hour, minute, 0);
 
-            int seconds = TimeHelper.secondsBetween(System.currentTimeMillis(), (TimeHelper.getNextTime(hour, minute, 0)));
+            int seconds = TimeHelper.secondsBetween(System.currentTimeMillis(), TimeHelper.getNextTime(hour, minute, 0));
             Log.i(HarjuMainActivity.LOG_TAG, "Iltasoitto scheduled to play in " + seconds + " seconds.");
         } else {
             clearAlarm(ctx);

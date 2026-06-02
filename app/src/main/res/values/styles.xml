@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="HarjuTheme" parent="android:Theme"/>
+    <style name="HarjuTheme" parent="Theme.AppCompat.NoActionBar"/>
 </resources>

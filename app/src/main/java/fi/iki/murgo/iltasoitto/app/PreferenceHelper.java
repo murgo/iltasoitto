@@ -1,9 +1,7 @@
 package fi.iki.murgo.iltasoitto.app;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 public class PreferenceHelper {
     public static final String KEY_PREF_ACTIVE = "pref_active";
@@ -14,9 +12,9 @@ public class PreferenceHelper {
     private final SharedPreferences prefs;
     private final SharedPreferences.Editor editor;
 
-    @SuppressLint("CommitPrefEdits")
     public PreferenceHelper(Context ctx) {
-        prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        // Use same file name as PreferenceManager.getDefaultSharedPreferences() for data compatibility
+        prefs = ctx.getSharedPreferences(ctx.getPackageName() + "_preferences", Context.MODE_PRIVATE);
         editor = prefs.edit();
     }
 
@@ -37,7 +35,7 @@ public class PreferenceHelper {
 
     public void save(boolean isChecked) {
         editor.putBoolean(KEY_PREF_ACTIVE, isChecked);
-        editor.commit();
+        editor.apply();
     }
 
     public int getHour() {

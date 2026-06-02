@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Iltasoitto.iml" filepath="$PROJECT_DIR$/.idea/modules/Iltasoitto.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/iltasoitto.iml" filepath="$PROJECT_DIR$/.idea/modules/iltasoitto.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/iltasoitto.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/iltasoitto.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/iltasoitto.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/iltasoitto.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/iltasoitto.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/iltasoitto.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/iltasoitto.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/iltasoitto.app.unitTest.iml" />
     </modules>
   </component>
 </project>

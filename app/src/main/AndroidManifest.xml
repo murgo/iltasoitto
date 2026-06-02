@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="fi.iki.murgo.iltasoitto.app">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+    <!-- API 31-32: user must approve exact alarms in Settings -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32"/>
+    <!-- API 33+: auto-granted for clock/alarm apps, no user action needed -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+    <!-- API 33+: required to post foreground service notification -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:allowBackup="true"
@@ -14,22 +21,25 @@
         <activity android:name=".HarjuMainActivity"
                   android:configChanges="orientation"
                   android:screenOrientation="portrait"
-                >
+                  android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <receiver android:name=".HarjuLauncher" />
+        <!-- exported=false: only triggered by PendingIntent from AlarmManager -->
+        <receiver android:name=".HarjuLauncher" android:exported="false"/>
 
-        <receiver android:name=".AlarmSetter">
+        <receiver android:name=".AlarmSetter" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".MusicPlayerService" android:exported="false"/>
+        <service android:name=".MusicPlayerService"
+                 android:exported="false"
+                 android:foregroundServiceType="mediaPlayback"/>
     </application>
 </manifest>
