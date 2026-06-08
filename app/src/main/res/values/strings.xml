@@ -4,14 +4,14 @@
     <string name="action_settings">Settings</string>
     <string name="pref_title_active">Play sound at %1$s</string>
 
-    <string name="toast_active">active</string>
-    <string name="toast_inactive">Playing sound is disabled</string>
-
     <string name="pref_credits">App by Lauri Härsilä, murgo@iki.fi</string>
 
     <string name="notification_title">Iltasoitto</string>
     <string name="notification_text">Click here to stop playing</string>
-    <string name="nextplay">"Time until next play: "</string>
+
+    <string name="toast_alarm_scheduled_in">Iltasoitto plays in %1$s.</string>
+    <string name="toast_alarm_overdue">Iltasoitto overdue by %1$s.</string>
+    <string name="toast_inactive">Playing sound is disabled.</string>
 
     <string name="play_button_play">Play Harjun iltasoitto</string>
     <string name="play_button_stop">Stop playing</string>

@@ -2,14 +2,14 @@
     <string name="action_settings">Asetukset</string>
     <string name="pref_title_active">Soita iltasoitto kello %1$s</string>
 
-    <string name="toast_active">päällä</string>
-    <string name="toast_inactive">Soitto on pois päältä</string>
-
     <string name="pref_credits">Sovelluksen kehitti Lauri Härsilä, murgo@iki.fi</string>
 
     <string name="notification_title">Iltasoitto</string>
     <string name="notification_text">Paina tästä soiton lopettamiseksi</string>
-    <string name="nextplay">". Aikaa seuraavaan soittoon: "</string>
+
+    <string name="toast_inactive">Soitto on pois päältä.</string>
+    <string name="toast_alarm_scheduled_in">Iltasoitto soi %1$s päästä.</string>
+    <string name="toast_alarm_overdue">Iltasoitto myöhässä %1$s.</string>
 
     <string name="play_button_play">Soita Harjun iltasoitto</string>
     <string name="play_button_stop">Pysäytä soitto</string>

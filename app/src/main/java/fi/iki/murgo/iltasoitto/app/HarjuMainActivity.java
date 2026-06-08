@@ -70,6 +70,7 @@ public class HarjuMainActivity extends AppCompatActivity {
         logo.setOnClickListener(getCreditsListener());
 
         PreferenceHelper.get(this).clean();
+        showScheduledAlarmToast();
         AlarmSetter.checkAlarm(this);
 
         SeekBar volumeSlider = findViewById(R.id.volume_slider);
@@ -163,15 +164,34 @@ public class HarjuMainActivity extends AppCompatActivity {
             animator.hide(this);
     }
 
+    private void showScheduledAlarmToast() {
+        long scheduledTime = PreferenceHelper.get(this).getScheduledTime();
+        if (scheduledTime < 0) return;
+        long remainingMs = scheduledTime - System.currentTimeMillis();
+        String duration = formatDuration(Math.abs(remainingMs) / 1000);
+        String msg = remainingMs >= 0
+            ? getString(R.string.toast_alarm_scheduled_in, duration)
+            : getString(R.string.toast_alarm_overdue, duration);
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    private static String formatDuration(long totalSeconds) {
+        long h = totalSeconds / 3600;
+        long m = (totalSeconds % 3600) / 60;
+        long s = totalSeconds % 60;
+        if (h > 0) return h + "h " + m + "min " + s + "s";
+        if (m > 0) return m + "min " + s + "s";
+        return s + "s";
+    }
+
     private void showToast() {
         if (PreferenceHelper.get(this).isActive()) {
             int hour = PreferenceHelper.get(this).getHour();
             int minute = PreferenceHelper.get(this).getMinute();
             Duration between = TimeHelper.durationUntilNextTime(hour, minute, 0);
-            long hours = between.toHours();
-            long minutes = between.toMinutes() % 60;
+            String duration = formatDuration(between.getSeconds());
             Toast.makeText(this,
-                getString(R.string.nextplay) + hours + ":" + String.format("%02d", minutes),
+                getString(R.string.toast_alarm_scheduled_in, duration),
                 Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, getString(R.string.toast_inactive), Toast.LENGTH_SHORT).show();

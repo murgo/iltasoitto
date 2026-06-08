@@ -26,6 +26,7 @@ public class AlarmSetter extends BroadcastReceiver {
         AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(intent);
         intent.cancel();
+        PreferenceHelper.get(ctx).clearScheduledTime();
     }
 
     public static void setAlarm(Context ctx, int hour, int minute, int second) {
@@ -36,10 +37,12 @@ public class AlarmSetter extends BroadcastReceiver {
             // SCHEDULE_EXACT_ALARM not granted by user (API 31-32); USE_EXACT_ALARM covers API 33+
             Log.w(HarjuMainActivity.LOG_TAG, "Exact alarm permission not granted, using inexact alarm.");
             alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAt, createIntent(ctx));
+            PreferenceHelper.get(ctx).saveScheduledTime(triggerAt);
             return;
         }
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAt, createIntent(ctx));
+        PreferenceHelper.get(ctx).saveScheduledTime(triggerAt);
     }
 
     public static void checkAlarm(Context ctx) {

@@ -8,6 +8,7 @@ public class PreferenceHelper {
     public static final String KEY_PREF_HOUR = "pref_hour";
     public static final String KEY_PREF_MINUTE = "pref_minute";
     public static final String KEY_PREF_VOLUME = "pref_volume";
+    public static final String KEY_PREF_SCHEDULED_TIME = "pref_scheduled_time";
 
     private static PreferenceHelper _instance;
     private final SharedPreferences prefs;
@@ -53,6 +54,20 @@ public class PreferenceHelper {
 
     public void saveVolume(int volume) {
         editor.putInt(KEY_PREF_VOLUME, volume);
+        editor.apply();
+    }
+
+    public long getScheduledTime() {
+        return prefs.getLong(KEY_PREF_SCHEDULED_TIME, -1L);
+    }
+
+    public void saveScheduledTime(long epochMillis) {
+        editor.putLong(KEY_PREF_SCHEDULED_TIME, epochMillis);
+        editor.apply();
+    }
+
+    public void clearScheduledTime() {
+        editor.remove(KEY_PREF_SCHEDULED_TIME);
         editor.apply();
     }
 }
