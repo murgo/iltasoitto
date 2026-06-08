@@ -125,7 +125,7 @@ public class MusicPlayerService extends Service {
             stopSelf();
         }
 
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     // Converts a linear slider value (0–100) to an amplitude (0.0–1.0) using a dB curve
