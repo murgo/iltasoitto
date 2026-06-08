@@ -69,6 +69,12 @@ public class MusicPlayerService extends Service {
         }
     }
 
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        stopSelf();
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -77,6 +83,7 @@ public class MusicPlayerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        AlarmSetter.checkAlarm(this);
         if (intent == null || intent.getBooleanExtra(STARTED, true)) {
             // startForeground must be called before any early return on API 31+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -88,7 +95,6 @@ public class MusicPlayerService extends Service {
 
             if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
                 Log.i(HarjuMainActivity.LOG_TAG, "Notifications disabled, skipping playback (user cannot cancel).");
-                AlarmSetter.checkAlarm(this);
                 ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
                 stopSelf();
                 return START_NOT_STICKY;
@@ -97,7 +103,6 @@ public class MusicPlayerService extends Service {
             AudioManager audio = (AudioManager) getSystemService(AUDIO_SERVICE);
             if (audio.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
                 Log.i(HarjuMainActivity.LOG_TAG, "Phone is on silent/vibrate, skipping playback.");
-                AlarmSetter.checkAlarm(this);
                 ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
                 stopSelf();
                 return START_NOT_STICKY;
@@ -106,7 +111,6 @@ public class MusicPlayerService extends Service {
             int audioMode = audio.getMode();
             if (audioMode == AudioManager.MODE_IN_CALL || audioMode == AudioManager.MODE_IN_COMMUNICATION) {
                 Log.i(HarjuMainActivity.LOG_TAG, "Phone call in progress, skipping playback.");
-                AlarmSetter.checkAlarm(this);
                 ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
                 stopSelf();
                 return START_NOT_STICKY;
@@ -117,8 +121,6 @@ public class MusicPlayerService extends Service {
                 mediaPlayer.start();
                 isPlaying = true;
             }
-
-            AlarmSetter.checkAlarm(this);
         } else {
             stopSelf();
         }
@@ -155,6 +157,7 @@ public class MusicPlayerService extends Service {
             .setContentText(getText(R.string.notification_text))
             .setWhen(System.currentTimeMillis())
             .setContentIntent(pi)
+            .setDeleteIntent(pi)
             .build();
     }
 }
