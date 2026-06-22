@@ -30,18 +30,22 @@ public class AlarmSetter extends BroadcastReceiver {
     }
 
     public static void setAlarm(Context ctx, int hour, int minute, int second) {
-        AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-        long triggerAt = TimeHelper.getNextTime(hour, minute, second);
+        scheduleAlarm(ctx, TimeHelper.getNextTime(hour, minute, second));
+    }
 
+    private static void setAlarmNextDay(Context ctx, int hour, int minute, int second) {
+        scheduleAlarm(ctx, TimeHelper.getNextTimeTomorrow(hour, minute, second));
+    }
+
+    private static void scheduleAlarm(Context ctx, long triggerAt) {
+        AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
             // SCHEDULE_EXACT_ALARM not granted by user (API 31-32); USE_EXACT_ALARM covers API 33+
             Log.w(HarjuMainActivity.LOG_TAG, "Exact alarm permission not granted, using inexact alarm.");
             alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAt, createIntent(ctx));
-            PreferenceHelper.get(ctx).saveScheduledTime(triggerAt);
-            return;
+        } else {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAt, createIntent(ctx));
         }
-
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAt, createIntent(ctx));
         PreferenceHelper.get(ctx).saveScheduledTime(triggerAt);
     }
 
@@ -53,6 +57,22 @@ public class AlarmSetter extends BroadcastReceiver {
 
             int seconds = TimeHelper.secondsBetween(System.currentTimeMillis(), TimeHelper.getNextTime(hour, minute, 0));
             Log.i(HarjuMainActivity.LOG_TAG, "Iltasoitto scheduled to play in " + seconds + " seconds.");
+        } else {
+            clearAlarm(ctx);
+            Log.i(HarjuMainActivity.LOG_TAG, "Iltasoitto cleared");
+        }
+    }
+
+    // Called from MusicPlayerService after the alarm fires. Always schedules for the next
+    // calendar day so that an early-firing alarm cannot reschedule for the same day and play twice.
+    public static void reschedule(Context ctx) {
+        if (PreferenceHelper.get(ctx).isActive()) {
+            int hour = PreferenceHelper.get(ctx).getHour();
+            int minute = PreferenceHelper.get(ctx).getMinute();
+            setAlarmNextDay(ctx, hour, minute, 0);
+
+            int seconds = TimeHelper.secondsBetween(System.currentTimeMillis(), TimeHelper.getNextTimeTomorrow(hour, minute, 0));
+            Log.i(HarjuMainActivity.LOG_TAG, "Iltasoitto rescheduled to play in " + seconds + " seconds.");
         } else {
             clearAlarm(ctx);
             Log.i(HarjuMainActivity.LOG_TAG, "Iltasoitto cleared");

@@ -15,6 +15,7 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -86,6 +87,11 @@ public class HarjuMainActivity extends AppCompatActivity {
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
+
+        SwitchCompat overrideSilentSwitch = findViewById(R.id.override_silent_switch);
+        overrideSilentSwitch.setChecked(PreferenceHelper.get(this).getOverrideSilent());
+        overrideSilentSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
+            PreferenceHelper.get(HarjuMainActivity.this).saveOverrideSilent(isChecked));
 
         findViewById(R.id.play_button).setOnClickListener(v -> togglePlayback());
         updatePlayButton();

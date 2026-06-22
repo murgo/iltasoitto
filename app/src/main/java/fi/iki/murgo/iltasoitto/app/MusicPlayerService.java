@@ -21,6 +21,7 @@ public class MusicPlayerService extends Service {
     private static final int NOTIFICATION_ID = 0x666;
     private static final String CHANNEL_ID = "iltasoitto_channel";
     private static final String STARTED = "STARTED";
+    public static final String ALARM_TRIGGERED = "ALARM_TRIGGERED";
     public interface PlaybackListener {
         void onPlaybackStopped();
     }
@@ -83,7 +84,19 @@ public class MusicPlayerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        AlarmSetter.checkAlarm(this);
+        boolean alarmTriggered = intent != null && intent.getBooleanExtra(ALARM_TRIGGERED, false);
+
+        // Read before rescheduling so the tolerance check below sees the time that just fired.
+        long scheduledTime = alarmTriggered ? PreferenceHelper.get(this).getScheduledTime() : -1;
+
+        if (alarmTriggered) {
+            // Always schedule for the next calendar day to prevent a second play on the same day
+            // when the alarm fires slightly before the target time.
+            AlarmSetter.reschedule(this);
+        } else {
+            AlarmSetter.checkAlarm(this);
+        }
+
         if (intent == null || intent.getBooleanExtra(STARTED, true)) {
             // startForeground must be called before any early return on API 31+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -91,6 +104,17 @@ public class MusicPlayerService extends Service {
                     ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
             } else {
                 startForeground(NOTIFICATION_ID, getNotification());
+            }
+
+            // Guard against extreme drift from inexact alarms or clock corrections.
+            if (scheduledTime > 0) {
+                long driftMs = Math.abs(System.currentTimeMillis() - scheduledTime);
+                if (driftMs > 10 * 60 * 1000L) {
+                    Log.w(HarjuMainActivity.LOG_TAG, "Alarm fired " + driftMs / 1000 + "s from scheduled time, skipping playback.");
+                    ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
+                    stopSelf();
+                    return START_NOT_STICKY;
+                }
             }
 
             if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
@@ -101,7 +125,8 @@ public class MusicPlayerService extends Service {
             }
 
             AudioManager audio = (AudioManager) getSystemService(AUDIO_SERVICE);
-            if (audio.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
+            if (audio.getRingerMode() != AudioManager.RINGER_MODE_NORMAL
+                    && !PreferenceHelper.get(this).getOverrideSilent()) {
                 Log.i(HarjuMainActivity.LOG_TAG, "Phone is on silent/vibrate, skipping playback.");
                 ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
                 stopSelf();

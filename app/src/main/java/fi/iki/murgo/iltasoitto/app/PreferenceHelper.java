@@ -9,6 +9,7 @@ public class PreferenceHelper {
     public static final String KEY_PREF_MINUTE = "pref_minute";
     public static final String KEY_PREF_VOLUME = "pref_volume";
     public static final String KEY_PREF_SCHEDULED_TIME = "pref_scheduled_time";
+    public static final String KEY_PREF_OVERRIDE_SILENT = "pref_override_silent";
 
     private static PreferenceHelper _instance;
     private final SharedPreferences prefs;
@@ -68,6 +69,15 @@ public class PreferenceHelper {
 
     public void clearScheduledTime() {
         editor.remove(KEY_PREF_SCHEDULED_TIME);
+        editor.apply();
+    }
+
+    public boolean getOverrideSilent() {
+        return prefs.getBoolean(KEY_PREF_OVERRIDE_SILENT, false);
+    }
+
+    public void saveOverrideSilent(boolean override) {
+        editor.putBoolean(KEY_PREF_OVERRIDE_SILENT, override);
         editor.apply();
     }
 }

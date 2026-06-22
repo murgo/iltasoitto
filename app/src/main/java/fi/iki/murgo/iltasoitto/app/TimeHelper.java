@@ -12,6 +12,18 @@ public class TimeHelper {
             .toEpochMilli();
     }
 
+    public static long getNextTimeTomorrow(int hourOfDay, int minuteOfHour, int secondOfMinute) {
+        return LocalDateTime.now()
+            .plusDays(1)
+            .withHour(hourOfDay)
+            .withMinute(minuteOfHour)
+            .withSecond(secondOfMinute)
+            .withNano(0)
+            .atZone(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli();
+    }
+
     public static LocalDateTime getNextTime(LocalDateTime now, int hourOfDay, int minuteOfHour, int secondOfMinute) {
         LocalDateTime then = now
             .withHour(hourOfDay)

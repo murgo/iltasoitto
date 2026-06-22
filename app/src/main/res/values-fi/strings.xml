@@ -15,5 +15,5 @@
     <string name="play_button_stop">Pysäytä soitto</string>
     <string name="volume_label">Äänenvoimakkuus:</string>
     <string name="notification_warning">Ilmoitukset ovat pois käytöstä. Avaa asetukset napauttamalla ja ota ilmoitukset käyttöön, jotta iltasoitto toimii.</string>
-    <string name="silent_mode_note">Iltasoitto ei soi, jos puhelin on äänettömällä tai värinätilassa.</string>
+    <string name="override_silent_label">Soi myös äänettömällä tai värinätilassa</string>
 </resources>

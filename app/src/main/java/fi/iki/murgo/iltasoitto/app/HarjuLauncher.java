@@ -12,6 +12,7 @@ public class HarjuLauncher extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Intent service = new Intent(context, MusicPlayerService.class);
+        service.putExtra(MusicPlayerService.ALARM_TRIGGERED, true);
         ContextCompat.startForegroundService(context, service);
     }
 }

@@ -17,5 +17,5 @@
     <string name="play_button_stop">Stop playing</string>
     <string name="volume_label">Volume:</string>
     <string name="notification_warning">Notifications are disabled. Tap here to open Settings and enable them so the alarm can play.</string>
-    <string name="silent_mode_note">The alarm does not play when the phone is set to silent or vibrate.</string>
+    <string name="override_silent_label">Play even when phone is silent or on vibrate</string>
 </resources>
